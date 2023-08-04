@@ -1,0 +1,3 @@
+CREATE DATABASE IF NOT EXISTS shop;
+USE shop;
+GRANT ALL PRIVILEGES ON shop.* TO 'admin'@'%';

@@ -27,6 +27,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> getAllProducts() {
         List<Product> allProducts = productRepository.findAll();
+        if(allProducts.isEmpty()){
+            throw new NoDataAvailableException("Shop is empty");
+        }
         return productDtoMapper.mapToProductDtos(allProducts);
     }
 
@@ -41,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
         checkProductAlreadyExist(productInfo);
         Product productToSave = productMapper.mapToProduct(productInfo);
         Product savedProduct = productRepository.save(productToSave);
-        LOGGER.info("Product added [{}]", savedProduct);
+        LOGGER.debug("Product added [{}]", savedProduct);
         return productDtoMapper.mapToProductDto(savedProduct);
     }
 
@@ -61,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
-        LOGGER.info("Product with id = [{}] deleted", id);
+        LOGGER.debug("Product with id = [{}] deleted", id);
     }
 
     private void checkProductAlreadyExist(ProductDto productDto) {

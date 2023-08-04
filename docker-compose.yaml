@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  mysqldb:
+    image: "mysql:8.0.34"
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/1.sql
+    environment:
+      MYSQL_DATABASE: shop
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+
+  adminer:
+    image: "adminer:4.8.1"
+    restart: always
+    environment:
+      adminer_default_server: mysqldb
+    ports:
+      - "9000:8080"
+
+volumes:
+  shop-net:

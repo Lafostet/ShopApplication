@@ -43,7 +43,7 @@ public class ErrorController extends ResponseEntityExceptionHandler {
 
     private void logExceptionCause(Exception ex) {
         String message = MessageFormat.format("{0} caused by {1}", ex.getClass().getSimpleName(), ex.getMessage());
-        LOGGER.info(message, ex);
+        LOGGER.debug(message, ex);
     }
 
 }

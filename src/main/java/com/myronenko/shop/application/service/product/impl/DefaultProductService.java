@@ -9,16 +9,16 @@ import com.myronenko.shop.application.mapper.ProductMapper;
 import com.myronenko.shop.application.repository.ProductRepository;
 import com.myronenko.shop.application.service.product.ProductService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Slf4j
+@Log4j2
 @Service
 @AllArgsConstructor
-public class ProductServiceImpl implements ProductService {
+public class DefaultProductService implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> getAllProducts() {
         List<Product> allProducts = productRepository.findAll();
-        if(allProducts.isEmpty()){
+        if (allProducts.isEmpty()) {
             throw new NoDataAvailableException("Shop is empty");
         }
         return productDtoMapper.mapToProductDtos(allProducts);
@@ -63,16 +63,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
-        LOGGER.debug("Product with id = [{}] deleted", id);
+        Product product = productRepository.getById(id);
+        productRepository.delete(product);
+        LOGGER.debug("Product with [{}] deleted", product);
     }
 
     private void checkProductAlreadyExist(ProductDto productDto) {
         String name = productDto.getName();
         BigDecimal price = productDto.getPrice();
         String description = productDto.getDescription();
-        if (productRepository.findByNameAndPriceAndDescription(name, price, description).isPresent()) {
-            throw new DataAlreadyExistsException("Product with name = [{0}], price = [{1}] and description = [{2}] already exists", name, price, description);
+        if (productRepository.existsByNameAndPriceAndDescription(name, price, description)) {
+            LOGGER.info("Product with name = [{}], price = [{}] and description = [{}] already exists", name, price, description);
+            throw new DataAlreadyExistsException("Duplicates are not permitted");
         }
     }
 

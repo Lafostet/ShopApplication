@@ -17,6 +17,7 @@
 	<description>Shop sample application</description>
 	<properties>
 		<java.version>17</java.version>
+		<logstash.host>logstashcsm.application.shop.myronenko.com</logstash.host>
 	</properties>
 
 	<dependencies>
@@ -32,20 +33,26 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>7.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-        </dependency>
 
-        <dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
 		<dependency>
@@ -112,6 +119,26 @@
 			<version>3.15</version>
 		</dependency>
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>local</id>
+			<properties>
+				<logstash.port>10000</logstash.port>
+				<logger.console.tresholdFilter>ALL</logger.console.tresholdFilter>
+				<logger.socket.tresholdFilter>OFF</logger.socket.tresholdFilter>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>dev</id>
+			<properties>
+				<logstash.port>10001</logstash.port>
+				<logger.console.tresholdFilter>OFF</logger.console.tresholdFilter>
+				<logger.socket.tresholdFilter>ALL</logger.socket.tresholdFilter>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>
